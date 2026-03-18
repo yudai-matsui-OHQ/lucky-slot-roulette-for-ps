@@ -28,7 +28,7 @@
 
 ```bash
 git clone <リポジトリURL>
-cd Lucky-Slot-Roulette
+cd lucky-slot-roulette-for-ps
 npm install
 ```
 

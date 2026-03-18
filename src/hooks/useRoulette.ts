@@ -122,10 +122,3 @@ function spinCurveDeriv(t: number): number {
     (2 * dt)
   );
 }
-
-function easeOutCubic(t: number) {
-  return 1 - Math.pow(1 - t, 3);
-}
-function easeOutQuart(t: number) {
-  return 1 - Math.pow(1 - t, 4);
-}
