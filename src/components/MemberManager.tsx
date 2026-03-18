@@ -12,6 +12,7 @@ interface Props {
 
 export function MemberManager({ members, lastWinnerId, onAdd, onUpdate, onRemove }: Props) {
   const [newName, setNewName] = useState('');
+  const [isComposing, setIsComposing] = useState(false);
 
   const handleAdd = () => {
     if (newName.trim()) {
@@ -30,7 +31,13 @@ export function MemberManager({ members, lastWinnerId, onAdd, onUpdate, onRemove
           placeholder="名前を入力..."
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setIsComposing(false)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !isComposing) {
+              handleAdd();
+            }
+          }}
         />
         <button
           onClick={handleAdd}

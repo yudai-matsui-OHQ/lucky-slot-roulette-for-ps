@@ -12,6 +12,7 @@ export function MemberCard({ member, isLastWinner, onUpdate, onRemove }: Props) 
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(member.name);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [isComposing, setIsComposing] = useState(false);
 
   const handleSave = () => {
     if (name.trim()) {
@@ -34,8 +35,10 @@ export function MemberCard({ member, isLastWinner, onUpdate, onRemove }: Props) 
           className="flex-1 rounded bg-slate-700 px-2 py-1 text-white outline-none focus:ring-2 focus:ring-blue-500"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setIsComposing(false)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') handleSave();
+            if (e.key === 'Enter' && !isComposing) handleSave();
             if (e.key === 'Escape') {
               setName(member.name);
               setEditing(false);

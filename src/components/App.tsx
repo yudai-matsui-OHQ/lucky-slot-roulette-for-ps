@@ -41,7 +41,7 @@ export default function App() {
           onToggleExclude={() => setExcludeLast((v) => !v)}
         />
 
-        {view === 'roulette' && (
+        <div className={view === 'roulette' ? '' : 'hidden'}>
           <RouletteView
             members={members}
             lastWinner={lastWinner}
@@ -50,9 +50,9 @@ export default function App() {
             onWin={(member) => setLastWinnerId(member.id)}
             onAddHistory={handleAddHistory}
           />
-        )}
+        </div>
 
-        {view === 'members' && (
+        <div className={view === 'members' ? '' : 'hidden'}>
           <MemberManager
             members={members}
             lastWinnerId={lastWinnerId}
@@ -60,9 +60,11 @@ export default function App() {
             onUpdate={updateMember}
             onRemove={removeMember}
           />
-        )}
+        </div>
 
-        {view === 'history' && <HistoryPanel history={history} />}
+        <div className={view === 'history' ? '' : 'hidden'}>
+          <HistoryPanel history={history} />
+        </div>
       </div>
     </div>
   );
