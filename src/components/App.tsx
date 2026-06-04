@@ -31,6 +31,12 @@ export default function App() {
     setHistory((prev) => [...prev, record]);
   };
 
+  // 直近の当選者ID（index 0 = 前回, 1 = 前々回, 2 = 前々々回）。重み付き抽選で確率を下げるために使用。
+  const recentWinnerIds = history
+    .slice(-3)
+    .reverse()
+    .map((r) => r.memberId);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 px-4 py-8">
       <div className="mx-auto max-w-2xl">
@@ -46,6 +52,7 @@ export default function App() {
             members={members}
             lastWinner={lastWinner}
             excludeLast={excludeLast}
+            recentWinnerIds={recentWinnerIds}
             getEligibleMembers={getEligibleMembers}
             onWin={(member) => setLastWinnerId(member.id)}
             onAddHistory={handleAddHistory}
