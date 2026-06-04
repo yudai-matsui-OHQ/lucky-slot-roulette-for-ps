@@ -10,6 +10,7 @@ interface Props {
   members: Member[];
   lastWinner: Member | null;
   excludeLast: boolean;
+  recentWinnerIds: string[];
   getEligibleMembers: (excludeLast: boolean) => Member[];
   onWin: (member: Member) => void;
   onAddHistory: (record: SelectionRecord) => void;
@@ -19,6 +20,7 @@ export function RouletteView({
   members,
   lastWinner,
   excludeLast,
+  recentWinnerIds,
   getEligibleMembers,
   onWin,
   onAddHistory,
@@ -31,7 +33,7 @@ export function RouletteView({
 
   const handleSpin = () => {
     if (eligible.length < 2) return;
-    spin(eligible);
+    spin(eligible, recentWinnerIds);
   };
 
   const handleConfirm = () => {
@@ -69,7 +71,7 @@ export function RouletteView({
   const handleReset = () => {
     reset();
     setSaved(false);
-    spin(eligible);
+    spin(eligible, recentWinnerIds);
   };
 
   if (members.length < 2) {

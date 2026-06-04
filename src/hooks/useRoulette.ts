@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import type { Member, RoulettePhase } from '../types';
-import { secureRandomIndex } from '../utils/random';
+import { weightedRandomIndex } from '../utils/random';
+import { RECENT_WINNER_WEIGHTS } from '../utils/constants';
 
 export const CARD_HEIGHT = 80;
 
@@ -26,10 +27,16 @@ export function useRoulette() {
   };
 
   /* ── spin() ──────────────────────────────────── */
-  const spin = useCallback((eligible: Member[]) => {
+  // recentWinnerIds: 直近当選者のID配列（index 0 = 前回, 1 = 前々回）。
+  // 直近当選者ほど当たりにくくなるよう重みを下げて抽選する。
+  const spin = useCallback((eligible: Member[], recentWinnerIds: string[] = []) => {
     if (eligible.length < 2) return;
 
-    const winnerIdx = secureRandomIndex(eligible.length);
+    const weights = eligible.map((m) => {
+      const recency = recentWinnerIds.indexOf(m.id);
+      return recency === -1 ? 1 : RECENT_WINNER_WEIGHTS[recency] ?? 1;
+    });
+    const winnerIdx = weightedRandomIndex(weights);
     const selected = eligible[winnerIdx];
 
     // Normalise starting position to prevent overflow on repeat spins
