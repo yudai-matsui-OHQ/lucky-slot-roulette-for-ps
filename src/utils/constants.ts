@@ -13,10 +13,13 @@ export const AVATAR_COLORS = [
 
 /**
  * 直近の当選者の選出確率を下げる重み係数。
- * index 0 = 前回当選者, index 1 = 前々回当選者, index 2 = 前々々回(3週間前)当選者。
+ * index 0 = 前回当選者 ... index 4 = 5週前の当選者。
  * 通常メンバーの重みを 1 とした相対値（小さいほど当たりにくい）。
+ * クールダウン明けに一気に重み1へ戻ると当選確率が急上昇して
+ * 「元当選者がすぐ戻ってくる」印象につながるため、
+ * 5週間かけて段階的に 1 へ復帰させる。
  */
-export const RECENT_WINNER_WEIGHTS = [0.25, 0.5, 0.75] as const;
+export const RECENT_WINNER_WEIGHTS = [0.2, 0.35, 0.5, 0.7, 0.85] as const;
 
 export const STORAGE_KEYS = {
   members: 'facilitator-members',

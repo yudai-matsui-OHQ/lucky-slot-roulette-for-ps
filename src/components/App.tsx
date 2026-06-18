@@ -31,9 +31,10 @@ export default function App() {
     setHistory((prev) => [...prev, record]);
   };
 
-  // 直近の当選者ID（index 0 = 前回, 1 = 前々回, 2 = 前々々回）。重み付き抽選で確率を下げるために使用。
+  // 直近の当選者ID（index 0 = 前回 ... 4 = 5週前）。重み付き抽選で確率を下げるために使用。
+  // RECENT_WINNER_WEIGHTS の長さ（5週分）に合わせて直近5件を参照する。
   const recentWinnerIds = history
-    .slice(-3)
+    .slice(-5)
     .reverse()
     .map((r) => r.memberId);
 
