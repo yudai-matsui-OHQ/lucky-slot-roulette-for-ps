@@ -67,3 +67,32 @@ src/
 - `navigator.clipboard.writeText` はセキュリティ制約で動作しない環境があるため、スクリーンショット保存方式を採用
 - localStorageを使用しているため、ブラウザ/ドメインが変わるとデータはリセットされる
 - プロダクション環境へのデプロイ時は、IP制限などのアクセス制御を推奨
+
+## Claude Code 設定ファイルの取り扱い（最重要・厳守）
+
+このディレクトリは **`direnv` (`.envrc`) により専用の `CLAUDE_CONFIG_DIR` を使用する**。
+Claude の設定ファイル・スキル・その他の構成ファイルは **必ず `$CLAUDE_CONFIG_DIR` 配下** に置き、
+グローバルの `~/.claude/` は**編集・作成の対象にしない**こと。
+
+- **`$CLAUDE_CONFIG_DIR` の実体**: `~/.claude-config/lucky-slot-roulette-for-ps/`
+  （常にハードコードせず、環境変数 `$CLAUDE_CONFIG_DIR` を参照して解決する）
+
+### 対象と配置先の対応
+
+| 種類 | 編集/作成すべき場所 | ❌ 触ってはいけない場所 |
+|------|--------------------|------------------------|
+| ユーザー設定 (settings.json) | `$CLAUDE_CONFIG_DIR/settings.json` | `~/.claude/settings.json` |
+| スキル | `$CLAUDE_CONFIG_DIR/skills/` | `~/.claude/skills/` |
+| プラグイン/その他構成 | `$CLAUDE_CONFIG_DIR/` 配下 | `~/.claude/` 配下 |
+
+### 編集・作成前のチェック手順（必須）
+
+1. 設定ファイルやスキルを編集/作成する前に、必ず `echo $CLAUDE_CONFIG_DIR` で実際のパスを確認する。
+2. 書き込み先パスが `$CLAUDE_CONFIG_DIR`（= `~/.claude-config/lucky-slot-roulette-for-ps/`）配下であることを確認してから実行する。
+3. `~/.claude/` 直下を書き込み先にしようとしていることに気づいたら**中断し**、`$CLAUDE_CONFIG_DIR` 配下に読み替える。
+4. ユーザーが明示的に「グローバル（`~/.claude`）を変更してほしい」と指示した場合のみ、例外として `~/.claude/` を編集してよい。
+
+### 例外（読み取りは可）
+
+- `~/.claude/statusline-command.sh` のように、**両アカウント共通で参照するスクリプト**は例外的に `~/.claude/` に置く場合がある。
+  その場合も設定ファイル本体（`settings.json` の `statusLine` 参照など）は `$CLAUDE_CONFIG_DIR/settings.json` 側に記述する。

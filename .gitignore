@@ -4,3 +4,8 @@ dist
 *.local
 .env
 .env.*
+
+# Claude Code / account isolation
+CLAUDE.md
+.claude/settings.local.json
+.envrc

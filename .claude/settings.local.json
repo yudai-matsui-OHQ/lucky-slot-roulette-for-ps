@@ -3,7 +3,11 @@
     "allow": [
       "Bash(npm run:*)",
       "Bash(npm install:*)",
-      "Bash(claude doctor:*)"
+      "Bash(claude doctor:*)",
+      "WebFetch(domain:zenn.dev)",
+      "Bash(ls -la /Users/a030244710/.claude/ && echo \"---\" && ls -la /Users/a030244710/playground/lucky-slot-roulette-for-ps/.claude/ 2>/dev/null || echo \"No .claude dir in project\")",
+      "Read(//Users/a030244710/.claude-config/**)",
+      "Read(//Users/a030244710/.claude-config/client_project_name/**)"
     ]
   }
 }
