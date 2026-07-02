@@ -44,16 +44,16 @@ src/
 ```
 
 ## データモデル (localStorage)
-| キー | 型 | 説明 |
-|------|------|------|
-| `facilitator-members` | `Member[]` | 登録メンバー一覧 |
-| `facilitator-history` | `SelectionRecord[]` | 抽選履歴 |
-| `facilitator-lastWinner` | `string \| null` | 前回当選者のmemberId (除外対象) |
-| `facilitator-excludeLast` | `boolean` | 前回当選者除外のON/OFF (デフォルト: true) |
+| キー | 型 | 定義場所 | 説明 |
+|------|------|------|------|
+| `facilitator-members` | `Member[]` | `STORAGE_KEYS.members` | 登録メンバー一覧 |
+| `facilitator-history` | `SelectionRecord[]` | `STORAGE_KEYS.history` | 抽選履歴。直近5件が重み減衰の入力になる |
+| `facilitator-lastWinner` | `string \| null` | `STORAGE_KEYS.lastWinner` | 前回当選者のmemberId。除外トグル専用（重み減衰には未使用） |
+| `facilitator-excludeLast` | `boolean` | App.tsx にキーをハードコード（`STORAGE_KEYS` 未登録） | 前回当選者除外のON/OFF (デフォルト: true) |
 
 ## 主要な仕様
-- **除外ルール**: 前回当選した1人を除外可能 (UIトグルでON/OFF切替)
-- **直近当選者の重み減衰**: 直近5週分の当選者の選出確率を下げ、`RECENT_WINNER_WEIGHTS = [0.2, 0.35, 0.5, 0.7, 0.85]` で5週間かけて段階的に重み1へ復帰させる (App.tsxで`slice(-5)`)
+- **除外ルール**: `facilitator-lastWinner` に記録した前回当選者1人を、`facilitator-excludeLast` トグルで抽選対象から除外できる (UIでON/OFF切替、デフォルトON)
+- **直近当選者の重み減衰**: `facilitator-history` の直近5件 (App.tsxで`slice(-5)`) の当選者について選出確率を下げ、`RECENT_WINNER_WEIGHTS = [0.2, 0.35, 0.5, 0.7, 0.85]` (index 0 = 前回当選者) で5週間かけて段階的に重み1へ復帰させる。専用のlocalStorageキーは持たず履歴から算出する
 - **最低人数**: メンバー2人以上で抽選可能
 - **スロットアニメーション**: CSS transition 4秒 + cubic-bezier(0.15, 0.85, 0.25, 1) で自然な減速
 - **結果保存**: html-to-image でスクリーンショットをPNGダウンロード
