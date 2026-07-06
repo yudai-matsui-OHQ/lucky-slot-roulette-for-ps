@@ -21,6 +21,24 @@ export const AVATAR_COLORS = [
  */
 export const RECENT_WINNER_WEIGHTS = [0.2, 0.35, 0.5, 0.7, 0.85] as const;
 
+/**
+ * eligible 各メンバーの抽選重みを算出する（重み付き抽選の入力）。
+ * - recentWinnerIds に含まれるメンバーは、その直近度 (index 0 = 前回) に応じて
+ *   RECENT_WINNER_WEIGHTS の値を重みにする（当たりにくくする）。
+ * - 同一メンバーが複数回含まれる場合は最初の一致（＝最も直近）を採用し、最も強く減衰させる。
+ * - RECENT_WINNER_WEIGHTS の範囲外（5週より前）や未当選のメンバーは通常重み 1。
+ * 返す配列は eligibleIds と同じ順序・同じ長さ。
+ */
+export function recentWinnerWeights(
+  eligibleIds: string[],
+  recentWinnerIds: string[],
+): number[] {
+  return eligibleIds.map((id) => {
+    const recency = recentWinnerIds.indexOf(id);
+    return recency === -1 ? 1 : RECENT_WINNER_WEIGHTS[recency] ?? 1;
+  });
+}
+
 export const STORAGE_KEYS = {
   members: 'facilitator-members',
   history: 'facilitator-history',
