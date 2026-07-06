@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import type { Member, RoulettePhase } from '../types';
 import { weightedRandomIndex } from '../utils/random';
-import { RECENT_WINNER_WEIGHTS } from '../utils/constants';
+import { recentWinnerWeights } from '../utils/constants';
 
 export const CARD_HEIGHT = 80;
 
@@ -32,10 +32,10 @@ export function useRoulette() {
   const spin = useCallback((eligible: Member[], recentWinnerIds: string[] = []) => {
     if (eligible.length < 2) return;
 
-    const weights = eligible.map((m) => {
-      const recency = recentWinnerIds.indexOf(m.id);
-      return recency === -1 ? 1 : RECENT_WINNER_WEIGHTS[recency] ?? 1;
-    });
+    const weights = recentWinnerWeights(
+      eligible.map((m) => m.id),
+      recentWinnerIds,
+    );
     const winnerIdx = weightedRandomIndex(weights);
     const selected = eligible[winnerIdx];
 
