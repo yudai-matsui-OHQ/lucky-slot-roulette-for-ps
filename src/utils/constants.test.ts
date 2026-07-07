@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   AVATAR_COLORS,
   RECENT_WINNER_WEIGHTS,
+  STORAGE_KEYS,
   formatDate,
   getNextMonday,
   recentWinnerWeights,
@@ -38,6 +39,15 @@ describe('formatDate', () => {
 describe('定数', () => {
   it('アバターカラーは重複しない', () => {
     expect(new Set(AVATAR_COLORS).size).toBe(AVATAR_COLORS.length);
+  });
+
+  it('STORAGE_KEYS のリテラルは既存ユーザーデータとの互換のため固定(変更=マイグレーション課題)', () => {
+    expect(STORAGE_KEYS).toEqual({
+      members: 'facilitator-members',
+      history: 'facilitator-history',
+      lastWinner: 'facilitator-lastWinner',
+      excludeLast: 'facilitator-excludeLast',
+    });
   });
 
   it('直近当選者の重みは1未満で単調増加(古いほど当たりやすい)', () => {

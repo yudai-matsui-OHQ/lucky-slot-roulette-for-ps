@@ -43,6 +43,7 @@ export const STORAGE_KEYS = {
   members: 'facilitator-members',
   history: 'facilitator-history',
   lastWinner: 'facilitator-lastWinner',
+  excludeLast: 'facilitator-excludeLast',
 } as const;
 
 export function getNextMonday(): string {
