@@ -10,7 +10,7 @@ import { HistoryPanel } from './HistoryPanel';
 
 export default function App() {
   const [view, setView] = useState<View>('roulette');
-  const [excludeLast, setExcludeLast] = useLocalStorage('facilitator-excludeLast', true);
+  const [excludeLast, setExcludeLast] = useLocalStorage(STORAGE_KEYS.excludeLast, true);
   const {
     members,
     lastWinner,
