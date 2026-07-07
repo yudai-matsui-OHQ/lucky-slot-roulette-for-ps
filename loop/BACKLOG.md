@@ -5,7 +5,6 @@
 
 ## タスク
 
-- [ ] useLocalStorage が key 変更時に storedValue を再読込しない問題の要否を判断する — `useState(() => ...)` 初期化子が初回マウント時のみ読むため、key を変えても前キーの値が据え置かれる（現状挙動は `useLocalStorage.hook.test.ts` で pin 済み）。意図的ならコメントで明示、バグなら key を監視する useEffect で再読込する修正 + テスト期待値の更新。まず「再読込が必要な呼び出し側が存在するか」を grep で確認してから着手
 - [ ] Use the claude_design MCP (https://api.anthropic.com/v1/design/mcp, auth via /design-login) to import this project:
 https://claude.ai/design/p/6acd0133-3ef6-44a5-b0a1-b62cf7c59dee?file=Lucky+Slot+Arcade.dc.html
 Implement: Lucky Slot Arcade.dc.html 承認済み
@@ -13,6 +12,7 @@ Implement: Lucky Slot Arcade.dc.html 承認済み
 
 ## 完了
 
+- [x] useLocalStorage が key 変更時に storedValue を再読込しない問題の要否を判断する — 結論: **意図的仕様として明文化（fix しない）**。全4呼び出し側(App.tsx x2 / useMembers.ts x2)が静的な `STORAGE_KEYS.*` 定数キーを渡しており、props/state 由来の動的キーは皆無（grep + verifier 独立確認）。useEffect 再読込は仮想の将来ユースケースのためにフックを複雑化するだけなので追加せず、`useLocalStorage.ts` の JSDoc に stable-key 不変条件と将来の対処法(再マウント or key監視 useEffect)を明記、`useLocalStorage.hook.test.ts` の該当テストを「疑いの pin」から「仕様の回帰固定」に文言更新。コメント/ドキュメントのみの変更でロジック不変。npm run check green(33/33)。verifier APPROVE
 - [x] useLocalStorage の「フック本体」の統合テストを追加する — jsdom + @testing-library/react は既に devDependency 追加・インストール済み（ユーザー承認済み）。`src/hooks/useLocalStorage.hook.test.ts` を新規作成し、per-file の `// @vitest-environment jsdom` で環境切替（vite.config.ts は変更せずスコープ最小化）。renderHook で初期値/既存値復元/setValue更新+永続化/関数updater/再マウント往復/不正JSONフォールバックの7ケースを検証。「キー変更時の再読込」はタスクが求めていたが実装が再読込しないため、実挙動を pin して follow-up タスク化（テストは歪めず）。npm run check green（26→33テスト）。verifier APPROVE
 - [x] excludeLast の localStorage キーを STORAGE_KEYS に登録し App.tsx のハードコードを解消する — フェーズ2演習を兼ねて実施。キー値は既存と完全一致('facilitator-excludeLast')で後方互換維持、CLAUDE.md 表更新、STORAGE_KEYS リテラル固定テスト追加
 

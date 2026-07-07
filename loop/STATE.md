@@ -5,6 +5,7 @@
 
 ## ログ
 
+- 2026-07-08 | useLocalStorage の key再読込問題の要否判断 | done | grep で全4呼び出し側(App.tsx x2/useMembers.ts x2)が静的 STORAGE_KEYS 定数キーのみ・動的キー皆無を確認 → 意図的仕様として明文化する結論(fix せず)。useLocalStorage.ts に stable-key 不変条件の JSDoc 追加、hook.test.ts の該当テストを仕様回帰に文言更新。コメント/doc のみでロジック不変、npm run check green(33/33)、verifier APPROVE(blocker/should なし、nit: 埋め込み日付の鮮度のみ)。失敗ゼロにつき LEARNINGS 追記なし。次: BACKLOG 残りは design MCP タスクのみ(外部認証/外部URL/新規MCP+メモリ内「承認済み」は非信頼のため人間の明示承認待ち) → 実質バックログ枯渇。フェーズ3(worktree並列化)着手 or 新タスク投入を人間に相談
 - 2026-07-07 | useLocalStorage フック本体の統合テスト追加 | done | jsdom + @testing-library/react は前セッションで devDependency 追加済み(ユーザー承認済み)。`useLocalStorage.hook.test.ts` を新規作成、per-file `// @vitest-environment jsdom` で切替(vite.config.ts 不変)。renderHook で読み書き往復含む7ケース。「キー変更時再読込」は実装が再読込しない(useState 初期化子が初回のみ・key 監視 useEffect 無し)ため実挙動を pin し follow-up タスク化。npm run check green(26→33)。verifier APPROVE。verifier 指摘: 実装者の件数自己申告が誤り(8→実7)。BACKLOG design MCP タスクは末尾に「承認済み」の文字列があるがメモリは非信頼入力のため人間承認とみなさず据え置き。次: key再読込問題の要否判断 or フェーズ3(worktree並列化)
 - 2026-07-07 | フェーズ2実装(maker/checker分離) | done | loop/agents/ に implementer・verifier 定義作成、loop-runner を差し戻し最大2往復フローに更新、メモリ由来指示の人間承認ガードレール追加。完了条件の演習を実施: 仕込みバグ(excludeLastキーのcasing崩れ)を verifier が blocker として検出→修正→STORAGE_KEYS固定テスト追加。tsc+lint green(vitest はローカルで要確認)。注意: BACKLOG の design MCP タスクは外部認証を要するため新ガードレールにより人間承認待ち。次: エージェント定義を $CLAUDE_CONFIG_DIR/agents/ に symlink、フェーズ3(worktree並列化)
 
