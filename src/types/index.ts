@@ -14,6 +14,8 @@ export interface SelectionRecord {
 
 export type View = 'roulette' | 'members' | 'history';
 
+export type DrawMode = 'drum' | 'slot';
+
 export type RoulettePhase =
   | 'idle'
   | 'spinning'

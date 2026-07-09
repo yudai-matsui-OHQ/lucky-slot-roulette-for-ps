@@ -44,6 +44,7 @@ export const STORAGE_KEYS = {
   history: 'facilitator-history',
   lastWinner: 'facilitator-lastWinner',
   excludeLast: 'facilitator-excludeLast',
+  drawMode: 'facilitator-drawMode',
 } as const;
 
 export function getNextMonday(): string {

@@ -50,6 +50,7 @@ src/
 | `facilitator-history` | `SelectionRecord[]` | `STORAGE_KEYS.history` | 抽選履歴。直近5件が重み減衰の入力になる |
 | `facilitator-lastWinner` | `string \| null` | `STORAGE_KEYS.lastWinner` | 前回当選者のmemberId。除外トグル専用（重み減衰には未使用） |
 | `facilitator-excludeLast` | `boolean` | `STORAGE_KEYS.excludeLast` | 前回当選者除外のON/OFF (デフォルト: true) |
+| `facilitator-drawMode` | `DrawMode` (`'drum' \| 'slot'`) | `STORAGE_KEYS.drawMode` | 抽選画面の表示モード。ドラム式/スロット式の切替 (デフォルト: `'drum'`) |
 
 ## 主要な仕様
 - **除外ルール**: `facilitator-lastWinner` に記録した前回当選者1人を、`facilitator-excludeLast` トグルで抽選対象から除外できる (UIでON/OFF切替、デフォルトON)
