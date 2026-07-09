@@ -1,3 +1,5 @@
+import { recentWinnerWeights } from './constants';
+
 export function secureRandomIndex(max: number): number {
   const array = new Uint32Array(1);
   crypto.getRandomValues(array);
@@ -23,4 +25,16 @@ export function weightedRandomIndex(weights: number[]): number {
     if (r < acc) return i;
   }
   return weights.length - 1;
+}
+
+/**
+ * 抽選対象 eligibleIds の中から、直近当選者の重み減衰を反映して
+ * 勝者のインデックスを選ぶ。ドラム/スロット両モードで共有する勝者決定ロジック。
+ * = weightedRandomIndex(recentWinnerWeights(eligibleIds, recentWinnerIds))
+ */
+export function selectWinnerIndex(
+  eligibleIds: string[],
+  recentWinnerIds: string[],
+): number {
+  return weightedRandomIndex(recentWinnerWeights(eligibleIds, recentWinnerIds));
 }

@@ -47,6 +47,7 @@ describe('定数', () => {
       history: 'facilitator-history',
       lastWinner: 'facilitator-lastWinner',
       excludeLast: 'facilitator-excludeLast',
+      drawMode: 'facilitator-drawMode',
     });
   });
 

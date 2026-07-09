@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { secureRandomIndex, weightedRandomIndex } from './random';
+import { secureRandomIndex, weightedRandomIndex, selectWinnerIndex } from './random';
 
 /** crypto.getRandomValues を固定値でスタブする */
 function stubRandom(value: number) {
@@ -60,5 +60,25 @@ describe('weightedRandomIndex', () => {
       expect(idx).toBeGreaterThanOrEqual(0);
       expect(idx).toBeLessThan(3);
     }
+  });
+});
+
+describe('selectWinnerIndex', () => {
+  it('eligible が1件なら常に 0 を返す', () => {
+    for (let i = 0; i < 100; i++) {
+      expect(selectWinnerIndex(['a'], [])).toBe(0);
+    }
+  });
+
+  it('直近当選者(index 0=前回)の重みが下がっても、通常メンバーが1人なら決定的にその1人を選ぶ', () => {
+    // 'a','b' の2人。'a' は前回当選者なので重み0.2、'b' は通常重み1。
+    // 乱数を最大付近に固定すると累積重みの後方=通常メンバー 'b'(index 1)へ落ちる。
+    stubRandom(2 ** 32 - 1);
+    expect(selectWinnerIndex(['a', 'b'], ['a'])).toBe(1);
+  });
+
+  it('乱数が最小のとき先頭(重み>0)のインデックスを選ぶ', () => {
+    stubRandom(0);
+    expect(selectWinnerIndex(['a', 'b', 'c'], [])).toBe(0);
   });
 });

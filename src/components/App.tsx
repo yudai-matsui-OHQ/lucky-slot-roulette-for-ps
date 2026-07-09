@@ -1,16 +1,21 @@
 import { useState } from 'react';
-import type { View, SelectionRecord } from '../types';
+import type { View, SelectionRecord, DrawMode } from '../types';
 import { useMembers } from '../hooks/useMembers';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { STORAGE_KEYS } from '../utils/constants';
 import { Header } from './Header';
 import { RouletteView } from './RouletteView';
+import { SlotArcadeView } from './SlotArcadeView';
 import { MemberManager } from './MemberManager';
 import { HistoryPanel } from './HistoryPanel';
 
 export default function App() {
   const [view, setView] = useState<View>('roulette');
   const [excludeLast, setExcludeLast] = useLocalStorage(STORAGE_KEYS.excludeLast, true);
+  const [drawMode, setDrawMode] = useLocalStorage<DrawMode>(
+    STORAGE_KEYS.drawMode,
+    'drum',
+  );
   const {
     members,
     lastWinner,
@@ -49,15 +54,53 @@ export default function App() {
         />
 
         <div className={view === 'roulette' ? '' : 'hidden'}>
-          <RouletteView
-            members={members}
-            lastWinner={lastWinner}
-            excludeLast={excludeLast}
-            recentWinnerIds={recentWinnerIds}
-            getEligibleMembers={getEligibleMembers}
-            onWin={(member) => setLastWinnerId(member.id)}
-            onAddHistory={handleAddHistory}
-          />
+          {/* 抽選モードトグル: ドラム ⇄ スロット */}
+          <div className="mb-6 flex justify-center">
+            <div className="inline-flex rounded-lg bg-slate-800/60 p-1">
+              <button
+                onClick={() => setDrawMode('drum')}
+                className={`rounded-md px-5 py-1.5 text-sm font-bold transition ${
+                  drawMode === 'drum'
+                    ? 'bg-amber-500 text-slate-950'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                ドラム
+              </button>
+              <button
+                onClick={() => setDrawMode('slot')}
+                className={`rounded-md px-5 py-1.5 text-sm font-bold transition ${
+                  drawMode === 'slot'
+                    ? 'bg-amber-500 text-slate-950'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                スロット
+              </button>
+            </div>
+          </div>
+
+          {drawMode === 'drum' ? (
+            <RouletteView
+              members={members}
+              lastWinner={lastWinner}
+              excludeLast={excludeLast}
+              recentWinnerIds={recentWinnerIds}
+              getEligibleMembers={getEligibleMembers}
+              onWin={(member) => setLastWinnerId(member.id)}
+              onAddHistory={handleAddHistory}
+            />
+          ) : (
+            <SlotArcadeView
+              members={members}
+              lastWinner={lastWinner}
+              excludeLast={excludeLast}
+              recentWinnerIds={recentWinnerIds}
+              getEligibleMembers={getEligibleMembers}
+              onWin={(member) => setLastWinnerId(member.id)}
+              onAddHistory={handleAddHistory}
+            />
+          )}
         </div>
 
         <div className={view === 'members' ? '' : 'hidden'}>
