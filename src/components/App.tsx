@@ -2,16 +2,18 @@ import { useState } from 'react';
 import type { View, SelectionRecord, DrawMode } from '../types';
 import { useMembers } from '../hooks/useMembers';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useSharedState } from '../hooks/useSharedState';
 import { STORAGE_KEYS } from '../utils/constants';
 import { Header } from './Header';
 import { RouletteView } from './RouletteView';
 import { SlotArcadeView } from './SlotArcadeView';
 import { MemberManager } from './MemberManager';
 import { HistoryPanel } from './HistoryPanel';
+import { SyncStatusBadge } from './SyncStatusBadge';
 
 export default function App() {
   const [view, setView] = useState<View>('roulette');
-  const [excludeLast, setExcludeLast] = useLocalStorage(STORAGE_KEYS.excludeLast, true);
+  const [excludeLast, setExcludeLast] = useSharedState(STORAGE_KEYS.excludeLast, true);
   const [drawMode, setDrawMode] = useLocalStorage<DrawMode>(
     STORAGE_KEYS.drawMode,
     'drum',
@@ -27,7 +29,7 @@ export default function App() {
     getEligibleMembers,
   } = useMembers();
 
-  const [history, setHistory] = useLocalStorage<SelectionRecord[]>(
+  const [history, setHistory] = useSharedState<SelectionRecord[]>(
     STORAGE_KEYS.history,
     [],
   );
@@ -116,6 +118,8 @@ export default function App() {
         <div className={view === 'history' ? '' : 'hidden'}>
           <HistoryPanel history={history} />
         </div>
+
+        <SyncStatusBadge />
       </div>
     </div>
   );

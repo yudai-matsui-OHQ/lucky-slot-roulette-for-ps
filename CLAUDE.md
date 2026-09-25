@@ -11,7 +11,8 @@
 - **Framer Motion 12.35** - 当選者リビールアニメーション
 - **canvas-confetti 1.9** - 紙吹雪演出
 - **html-to-image 1.11** - 結果画面のスクリーンショット保存
-- **データ永続化**: localStorage（バックエンド不要）
+- **データ永続化**: Upstash Redis（Vercel Functions `api/state.ts` 経由）+ localStorage キャッシュ
+- **アクセス制御**: `middleware.ts`（Vercel Routing Middleware）による Basic 認証
 
 ## コマンド
 - `npm run dev` - 開発サーバー起動 (port 5173)
@@ -43,7 +44,14 @@ src/
 └── index.css                # Tailwind CSS import
 ```
 
-## データモデル (localStorage)
+## データ共有の仕組み
+- `api/state.ts`: GET で共有キー全件、PUT `{key, value}` で1キーを上書き保存。Redis には `lucky-slot:<key>` に `{ v: value }` で格納（未保存と null を区別するため）
+- `src/utils/sharedStore.ts`: クライアント側ストア。localStorage にキャッシュしつつ、起動時・フォーカス時・30秒ごとにサーバーから取得。書き込みは楽観的反映 + PUT（キー単位の last-write-wins）。サーバー未保存のキーは localStorage の既存値をアップロード（初回移行）
+- `useSharedState` は `useLocalStorage` と同じ API。共有キーは `SHARED_STORAGE_KEYS`（`api/state.ts` の `SHARED_KEYS` と一致させる）
+- `npm run dev` では /api が無いので 'local' モード（localStorage のみ）で動く
+- 環境変数: `KV_REST_API_URL` / `KV_REST_API_TOKEN`（Upstash 連携で自動設定）、`BASIC_AUTH_USER` / `BASIC_AUTH_PASSWORD`（未設定なら全リクエスト拒否）
+
+## データモデル (共有キーはサーバー、それ以外は localStorage)
 | キー | 型 | 定義場所 | 説明 |
 |------|------|------|------|
 | `facilitator-members` | `Member[]` | `STORAGE_KEYS.members` | 登録メンバー一覧 |
@@ -67,8 +75,7 @@ src/
 
 ## 注意事項
 - `navigator.clipboard.writeText` はセキュリティ制約で動作しない環境があるため、スクリーンショット保存方式を採用
-- localStorageを使用しているため、ブラウザ/ドメインが変わるとデータはリセットされる
-- プロダクション環境へのデプロイ時は、IP制限などのアクセス制御を推奨
+- `drawMode` のみ localStorage 保存のため、ブラウザごとに異なる
 
 ## Claude Code 設定ファイルの取り扱い（最重要・厳守）
 
