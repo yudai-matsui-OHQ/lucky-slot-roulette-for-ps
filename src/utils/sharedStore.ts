@@ -2,7 +2,8 @@
  * チーム共有データ (/api/state) と同期するクライアント側ストア。
  *
  * - 値は常に localStorage にもキャッシュし、初回描画はキャッシュから即座に行う。
- * - 起動時・ウィンドウ復帰時・一定間隔でサーバーから最新値を取得する。
+ * - サーバーからの取得はページ読み込み時の1回のみ (ポーリングしない)。
+ *   他の人の変更を見るにはブラウザを再読み込みする。自分の変更は即座に画面へ反映される。
  * - 書き込みは楽観的に反映し、裏でサーバーへ PUT する (キー単位の last-write-wins)。
  * - サーバーに未保存のキーは、このブラウザの localStorage にある既存データをアップロードする
  *   (localStorage 時代のデータの初回移行)。
@@ -18,8 +19,6 @@ interface Options {
   fetchFn?: typeof fetch;
   storage?: Storage;
 }
-
-export const POLL_INTERVAL_MS = 30_000;
 
 export function createSharedStore({
   endpoint = '/api/state',
@@ -112,12 +111,6 @@ export function createSharedStore({
     if (started || typeof window === 'undefined') return;
     started = true;
     void refresh();
-    const refreshIfVisible = () => {
-      if (document.visibilityState === 'visible') void refresh();
-    };
-    window.setInterval(refreshIfVisible, POLL_INTERVAL_MS);
-    window.addEventListener('focus', refreshIfVisible);
-    document.addEventListener('visibilitychange', refreshIfVisible);
   }
 
   return {

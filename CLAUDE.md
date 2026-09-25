@@ -46,7 +46,7 @@ src/
 
 ## データ共有の仕組み
 - `api/state.ts`: GET で共有キー全件、PUT `{key, value}` で1キーを上書き保存。Redis には `lucky-slot:<key>` に `{ v: value }` で格納（未保存と null を区別するため）
-- `src/utils/sharedStore.ts`: クライアント側ストア。localStorage にキャッシュしつつ、起動時・フォーカス時・30秒ごとにサーバーから取得。書き込みは楽観的反映 + PUT（キー単位の last-write-wins）。サーバー未保存のキーは localStorage の既存値をアップロード（初回移行）
+- `src/utils/sharedStore.ts`: クライアント側ストア。localStorage にキャッシュしつつ、ページ読み込み時に1回だけサーバーから取得（ポーリングなし。他の人の変更はブラウザ再読み込みで反映）。書き込みは楽観的反映 + PUT（キー単位の last-write-wins）。サーバー未保存のキーは localStorage の既存値をアップロード（初回移行）
 - `useSharedState` は `useLocalStorage` と同じ API。共有キーは `SHARED_STORAGE_KEYS`（`api/state.ts` の `SHARED_KEYS` と一致させる）
 - `npm run dev` では /api が無いので 'local' モード（localStorage のみ）で動く
 - 環境変数: `KV_REST_API_URL` / `KV_REST_API_TOKEN`（Upstash 連携で自動設定）、`BASIC_AUTH_USER` / `BASIC_AUTH_PASSWORD`（未設定なら全リクエスト拒否）
