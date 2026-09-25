@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-import { useLocalStorage } from './useLocalStorage';
+import { useSharedState } from './useSharedState';
 import type { Member } from '../types';
 import { STORAGE_KEYS, AVATAR_COLORS } from '../utils/constants';
 
 export function useMembers() {
-  const [members, setMembers] = useLocalStorage<Member[]>(STORAGE_KEYS.members, []);
-  const [lastWinnerId, setLastWinnerId] = useLocalStorage<string | null>(
+  const [members, setMembers] = useSharedState<Member[]>(STORAGE_KEYS.members, []);
+  const [lastWinnerId, setLastWinnerId] = useSharedState<string | null>(
     STORAGE_KEYS.lastWinner,
     null,
   );

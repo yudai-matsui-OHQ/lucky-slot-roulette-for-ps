@@ -47,6 +47,19 @@ export const STORAGE_KEYS = {
   drawMode: 'facilitator-drawMode',
 } as const;
 
+/**
+ * チーム全員で共有する (サーバーに保存する) キー。
+ * drawMode は各自の表示の好みなので共有せず localStorage のまま。
+ * api/state.ts の SHARED_KEYS と一致させること。
+ */
+export const SHARED_STORAGE_KEYS = [
+  STORAGE_KEYS.members,
+  STORAGE_KEYS.history,
+  STORAGE_KEYS.lastWinner,
+  STORAGE_KEYS.excludeLast,
+] as const;
+export type SharedStorageKey = (typeof SHARED_STORAGE_KEYS)[number];
+
 export function getNextMonday(): string {
   const now = new Date();
   const day = now.getDay();
