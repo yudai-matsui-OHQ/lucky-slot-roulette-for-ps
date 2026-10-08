@@ -1,5 +1,3 @@
-import { useState, useRef } from 'react';
-import { toPng } from 'html-to-image';
 import type { Member, SelectionRecord } from '../types';
 import { SlotMachine } from './SlotMachine';
 import { WinnerReveal } from './WinnerReveal';
@@ -27,8 +25,6 @@ export function RouletteView({
   onAddHistory,
 }: Props) {
   const { phase, winner, offset, spinMembers, spin, reset } = useRoulette();
-  const [saved, setSaved] = useState(false);
-  const resultRef = useRef<HTMLDivElement>(null);
   // 回してから「確定」するまでの間は、ページを離れる前に確認する
   useLeaveConfirmation(phase !== 'idle');
 
@@ -50,30 +46,10 @@ export function RouletteView({
       selectedAt: new Date().toISOString(),
     });
     reset(true);
-    setSaved(false);
-  };
-
-  const handleScreenshot = async () => {
-    if (!resultRef.current) return;
-    try {
-      const dataUrl = await toPng(resultRef.current, {
-        backgroundColor: '#0f172a',
-        pixelRatio: 2,
-      });
-      const link = document.createElement('a');
-      link.download = `lucky-person-${winner?.name ?? 'result'}.png`;
-      link.href = dataUrl;
-      link.click();
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
-      console.error('Screenshot failed:', err);
-    }
   };
 
   const handleReset = () => {
     reset();
-    setSaved(false);
     spin(eligible, recentWinnerIds);
   };
 
@@ -92,6 +68,27 @@ export function RouletteView({
 
   return (
     <div className="flex flex-col items-center">
+      {/* 当選後の操作ボタン。確定の押し忘れを防ぐため、画面上部 (スロットの上) に表示する。
+          ボタンが出たときにレイアウトがずれないよう、場所は常に確保しておく */}
+      <div className="mb-6 flex h-11 items-center justify-center gap-3">
+        {phase === 'celebrating' && winner && (
+          <>
+            <button
+              onClick={handleConfirm}
+              className="animate-glow-pulse rounded-lg bg-green-600 px-6 py-2 font-bold text-white transition hover:bg-green-500"
+            >
+              ✓ 確定して履歴に保存
+            </button>
+            <button
+              onClick={handleReset}
+              className="rounded-lg bg-slate-700 px-6 py-2 font-bold text-white transition hover:bg-slate-600"
+            >
+              やり直す
+            </button>
+          </>
+        )}
+      </div>
+
       {/* Last winner info */}
       {lastWinner && excludeLast && (
         <div className="mb-4 rounded-lg bg-slate-800/50 px-4 py-2 text-sm text-slate-400">
@@ -121,32 +118,9 @@ export function RouletteView({
 
       {/* Winner reveal */}
       {phase === 'celebrating' && winner && (
-        <>
-          <div ref={resultRef} className="px-4 pb-4">
-            <WinnerReveal winner={winner} />
-          </div>
-
-          <div className="mt-6 flex gap-3">
-            <button
-              onClick={handleConfirm}
-              className="rounded-lg bg-green-600 px-6 py-2 font-bold text-white transition hover:bg-green-500"
-            >
-              確定
-            </button>
-            <button
-              onClick={handleScreenshot}
-              className="rounded-lg bg-slate-700 px-6 py-2 font-bold text-white transition hover:bg-slate-600"
-            >
-              {saved ? '保存しました!' : '結果を保存'}
-            </button>
-            <button
-              onClick={handleReset}
-              className="rounded-lg bg-slate-700 px-6 py-2 font-bold text-white transition hover:bg-slate-600"
-            >
-              やり直す
-            </button>
-          </div>
-        </>
+        <div className="px-4 pb-4">
+          <WinnerReveal winner={winner} />
+        </div>
       )}
     </div>
   );

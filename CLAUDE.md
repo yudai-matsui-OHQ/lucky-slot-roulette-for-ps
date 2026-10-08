@@ -10,7 +10,6 @@
 - **Tailwind CSS v4.2** (`@tailwindcss/vite` プラグイン)
 - **Framer Motion 12.35** - 当選者リビールアニメーション
 - **canvas-confetti 1.9** - 紙吹雪演出
-- **html-to-image 1.11** - 結果画面のスクリーンショット保存
 - **データ永続化**: Upstash Redis（Vercel Functions `api/state.ts` 経由）+ localStorage キャッシュ
 - **アクセス制御**: `middleware.ts`（Vercel Routing Middleware）による Basic 認証
 
@@ -26,7 +25,7 @@ src/
 ├── components/
 │   ├── App.tsx              # ルート。ビュー切替 (roulette / members / history)
 │   ├── Header.tsx           # タイトル「Lucky Slot Roulette」+ ナビタブ + 除外トグル
-│   ├── RouletteView.tsx     # メイン抽選画面。SPIN → 結果表示 → 確定/保存/やり直し
+│   ├── RouletteView.tsx     # メイン抽選画面。SPIN → 結果表示 → 確定/やり直し
 │   ├── SlotMachine.tsx      # CSSトランジションによるスロット縦スクロールアニメーション
 │   ├── WinnerReveal.tsx     # 当選者発表 + 紙吹雪 (Framer Motion + canvas-confetti)
 │   ├── MemberManager.tsx    # メンバー追加/一覧画面
@@ -65,7 +64,7 @@ src/
 - **直近当選者の重み減衰**: `facilitator-history` の直近5件 (App.tsxで`slice(-5)`) の当選者について選出確率を下げ、`RECENT_WINNER_WEIGHTS = [0.2, 0.35, 0.5, 0.7, 0.85]` (index 0 = 前回当選者) で5週間かけて段階的に重み1へ復帰させる。専用のlocalStorageキーは持たず履歴から算出する
 - **最低人数**: メンバー2人以上で抽選可能
 - **スロットアニメーション**: CSS transition 4秒 + cubic-bezier(0.15, 0.85, 0.25, 1) で自然な減速
-- **結果保存**: html-to-image でスクリーンショットをPNGダウンロード
+- **確定**: 抽選後は「✓ 確定して履歴に保存」を押すまで履歴に残らない。押し忘れ防止のため操作ボタンはマシンの上に表示し、確定前のページ離脱時は確認ダイアログを出す (`useLeaveConfirmation`)
 - **テーマ**: ダークネイビー背景、ゴールド + ブルーのアクセント
 
 ## 開発サーバーとビルド
@@ -74,7 +73,6 @@ src/
 - プレビュー: `npm run preview` でビルド済みファイルを確認可能
 
 ## 注意事項
-- `navigator.clipboard.writeText` はセキュリティ制約で動作しない環境があるため、スクリーンショット保存方式を採用
 - `drawMode` のみ localStorage 保存のため、ブラウザごとに異なる
 
 ## Claude Code 設定ファイルの取り扱い（最重要・厳守）
