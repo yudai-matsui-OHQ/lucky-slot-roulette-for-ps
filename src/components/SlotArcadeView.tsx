@@ -111,7 +111,7 @@ export function SlotArcadeView({
           ボタンが出たときにレイアウトがずれないよう、場所は常に確保しておく */}
       <div
         style={{
-          height: 64,
+          height: 52,
           marginTop: 8,
           display: 'flex',
           alignItems: 'center',
@@ -125,12 +125,12 @@ export function SlotArcadeView({
               onClick={handleConfirm}
               style={{
                 cursor: 'pointer',
-                padding: '16px 26px',
+                padding: '14px 22px',
                 background: '#00e0ff',
                 color: '#0a0910',
                 border: 'none',
                 fontFamily: PIXEL,
-                fontSize: 13,
+                fontSize: 11,
                 animation: 'slot-confirmpulse 1.4s infinite',
               }}
             >
@@ -140,12 +140,12 @@ export function SlotArcadeView({
               onClick={handleSpin}
               style={{
                 cursor: 'pointer',
-                padding: '10px 14px',
-                background: 'transparent',
-                color: '#8b7fb0',
+                padding: '14px 22px',
+                background: '#181428',
+                color: '#8de3ff',
                 border: '2px solid #33294d',
                 fontFamily: PIXEL,
-                fontSize: 9,
+                fontSize: 11,
               }}
             >
               RETRY
