@@ -4,6 +4,7 @@ import type { Member, SelectionRecord } from '../types';
 import { SlotMachine } from './SlotMachine';
 import { WinnerReveal } from './WinnerReveal';
 import { useRoulette } from '../hooks/useRoulette';
+import { useLeaveConfirmation } from '../hooks/useLeaveConfirmation';
 import { getNextMonday } from '../utils/constants';
 
 interface Props {
@@ -28,6 +29,8 @@ export function RouletteView({
   const { phase, winner, offset, spinMembers, spin, reset } = useRoulette();
   const [saved, setSaved] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
+  // 回してから「確定」するまでの間は、ページを離れる前に確認する
+  useLeaveConfirmation(phase !== 'idle');
 
   const eligible = getEligibleMembers(excludeLast);
 
