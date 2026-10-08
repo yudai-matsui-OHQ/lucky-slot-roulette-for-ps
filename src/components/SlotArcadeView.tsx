@@ -106,6 +106,41 @@ export function SlotArcadeView({
     >
       <SlotStyles />
 
+      {/* 当選後の操作ボタン。確定の押し忘れを防ぐため、画面上部 (マシンの上) に表示する */}
+      {won && winner && (
+        <div style={{ display: 'flex', gap: 14, marginTop: 8, fontFamily: PIXEL, fontSize: 11 }}>
+          <button
+            onClick={handleConfirm}
+            style={{
+              cursor: 'pointer',
+              padding: '14px 22px',
+              background: '#00e0ff',
+              color: '#0a0910',
+              border: 'none',
+              fontFamily: PIXEL,
+              fontSize: 11,
+              boxShadow: '3px 3px 0 #0a6e80',
+            }}
+          >
+            CONFIRM
+          </button>
+          <button
+            onClick={handleSpin}
+            style={{
+              cursor: 'pointer',
+              padding: '14px 22px',
+              background: '#181428',
+              color: '#8de3ff',
+              border: '2px solid #33294d',
+              fontFamily: PIXEL,
+              fontSize: 11,
+            }}
+          >
+            RETRY
+          </button>
+        </div>
+      )}
+
       {/* Last winner info (Header の excludeLast と連動) */}
       {lastWinner && excludeLast && (
         <div
@@ -349,37 +384,6 @@ export function SlotArcadeView({
                 }}
               />
               <span style={{ fontSize: 38, color: '#fff' }}>{winner.name}</span>
-            </div>
-            <div style={{ display: 'flex', gap: 14, fontFamily: PIXEL, fontSize: 11 }}>
-              <button
-                onClick={handleConfirm}
-                style={{
-                  cursor: 'pointer',
-                  padding: '14px 22px',
-                  background: '#00e0ff',
-                  color: '#0a0910',
-                  border: 'none',
-                  fontFamily: PIXEL,
-                  fontSize: 11,
-                  boxShadow: '3px 3px 0 #0a6e80',
-                }}
-              >
-                CONFIRM
-              </button>
-              <button
-                onClick={handleSpin}
-                style={{
-                  cursor: 'pointer',
-                  padding: '14px 22px',
-                  background: '#181428',
-                  color: '#8de3ff',
-                  border: '2px solid #33294d',
-                  fontFamily: PIXEL,
-                  fontSize: 11,
-                }}
-              >
-                RETRY
-              </button>
             </div>
           </div>
         )}
