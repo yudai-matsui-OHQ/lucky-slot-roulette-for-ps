@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import type { Member, SelectionRecord } from '../types';
 import { useSlotMachine, winRows, ITEM_H, LAND } from '../hooks/useSlotMachine';
 import { getNextMonday } from '../utils/constants';
+import { useLeaveConfirmation } from '../hooks/useLeaveConfirmation';
 
 interface Props {
   members: Member[];
@@ -39,6 +40,8 @@ export function SlotArcadeView({
   const eligible = getEligibleMembers(excludeLast);
   const { phase, stopped, offs, trans, winner, lineType, strips } = state;
   const won = phase === 'win';
+  // 回してから「CONFIRM」するまでの間は、ページを離れる前に確認する
+  useLeaveConfirmation(phase !== 'idle');
 
   const handleSpin = () => {
     if (eligible.length < 2) return;
