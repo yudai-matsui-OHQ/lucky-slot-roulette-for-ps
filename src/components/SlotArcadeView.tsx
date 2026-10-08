@@ -20,6 +20,7 @@ function SlotStyles() {
   return (
     <style>{`
 @keyframes slot-glowpulse{0%,100%{box-shadow:5px 5px 0 #ff40a0,0 0 22px rgba(255,225,77,.4)}50%{box-shadow:5px 5px 0 #ff40a0,0 0 34px rgba(255,225,77,.9)}}
+@keyframes slot-confirmpulse{0%,100%{box-shadow:4px 4px 0 #0a6e80,0 0 18px rgba(0,224,255,.4)}50%{box-shadow:4px 4px 0 #0a6e80,0 0 32px rgba(0,224,255,.95)}}
 @keyframes slot-winflash{0%,100%{opacity:1}50%{opacity:.55}}
 @keyframes slot-cellwin{0%,100%{box-shadow:inset 0 0 0 3px #ffe14d,0 0 18px rgba(255,225,77,.7)}50%{box-shadow:inset 0 0 0 3px #fff,0 0 30px rgba(255,225,77,1)}}
 `}</style>
@@ -106,40 +107,52 @@ export function SlotArcadeView({
     >
       <SlotStyles />
 
-      {/* 当選後の操作ボタン。確定の押し忘れを防ぐため、画面上部 (マシンの上) に表示する */}
-      {won && winner && (
-        <div style={{ display: 'flex', gap: 14, marginTop: 8, fontFamily: PIXEL, fontSize: 11 }}>
-          <button
-            onClick={handleConfirm}
-            style={{
-              cursor: 'pointer',
-              padding: '14px 22px',
-              background: '#00e0ff',
-              color: '#0a0910',
-              border: 'none',
-              fontFamily: PIXEL,
-              fontSize: 11,
-              boxShadow: '3px 3px 0 #0a6e80',
-            }}
-          >
-            CONFIRM
-          </button>
-          <button
-            onClick={handleSpin}
-            style={{
-              cursor: 'pointer',
-              padding: '14px 22px',
-              background: '#181428',
-              color: '#8de3ff',
-              border: '2px solid #33294d',
-              fontFamily: PIXEL,
-              fontSize: 11,
-            }}
-          >
-            RETRY
-          </button>
-        </div>
-      )}
+      {/* 当選後の操作ボタン。確定の押し忘れを防ぐため、画面上部 (マシンの上) に表示する。
+          ボタンが出たときにレイアウトがずれないよう、場所は常に確保しておく */}
+      <div
+        style={{
+          height: 64,
+          marginTop: 8,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 14,
+          fontFamily: PIXEL,
+        }}
+      >
+        {won && winner && (
+          <>
+            <button
+              onClick={handleConfirm}
+              style={{
+                cursor: 'pointer',
+                padding: '16px 26px',
+                background: '#00e0ff',
+                color: '#0a0910',
+                border: 'none',
+                fontFamily: PIXEL,
+                fontSize: 13,
+                animation: 'slot-confirmpulse 1.4s infinite',
+              }}
+            >
+              ✓ CONFIRM &amp; SAVE
+            </button>
+            <button
+              onClick={handleSpin}
+              style={{
+                cursor: 'pointer',
+                padding: '10px 14px',
+                background: 'transparent',
+                color: '#8b7fb0',
+                border: '2px solid #33294d',
+                fontFamily: PIXEL,
+                fontSize: 9,
+              }}
+            >
+              RETRY
+            </button>
+          </>
+        )}
+      </div>
 
       {/* Last winner info (Header の excludeLast と連動) */}
       {lastWinner && excludeLast && (

@@ -92,29 +92,32 @@ export function RouletteView({
 
   return (
     <div className="flex flex-col items-center">
-      {/* 当選後の操作ボタン。確定の押し忘れを防ぐため、画面上部 (スロットの上) に表示する */}
-      {phase === 'celebrating' && winner && (
-        <div className="mb-6 flex gap-3">
-          <button
-            onClick={handleConfirm}
-            className="rounded-lg bg-green-600 px-6 py-2 font-bold text-white transition hover:bg-green-500"
-          >
-            確定
-          </button>
-          <button
-            onClick={handleScreenshot}
-            className="rounded-lg bg-slate-700 px-6 py-2 font-bold text-white transition hover:bg-slate-600"
-          >
-            {saved ? '保存しました!' : '結果を保存'}
-          </button>
-          <button
-            onClick={handleReset}
-            className="rounded-lg bg-slate-700 px-6 py-2 font-bold text-white transition hover:bg-slate-600"
-          >
-            やり直す
-          </button>
-        </div>
-      )}
+      {/* 当選後の操作ボタン。確定の押し忘れを防ぐため、画面上部 (スロットの上) に表示する。
+          ボタンが出たときにレイアウトがずれないよう、場所は常に確保しておく */}
+      <div className="mb-6 flex h-14 items-center justify-center gap-3">
+        {phase === 'celebrating' && winner && (
+          <>
+            <button
+              onClick={handleConfirm}
+              className="animate-glow-pulse rounded-xl bg-gradient-to-r from-green-500 to-green-600 px-7 py-3 text-lg font-black text-white transition hover:scale-105 active:scale-95"
+            >
+              ✓ 確定して履歴に保存
+            </button>
+            <button
+              onClick={handleScreenshot}
+              className="rounded-lg px-3 py-2 text-sm font-bold text-slate-400 transition hover:bg-slate-800 hover:text-white"
+            >
+              {saved ? '保存しました!' : '結果を保存'}
+            </button>
+            <button
+              onClick={handleReset}
+              className="rounded-lg px-3 py-2 text-sm font-bold text-slate-400 transition hover:bg-slate-800 hover:text-white"
+            >
+              やり直す
+            </button>
+          </>
+        )}
+      </div>
 
       {/* Last winner info */}
       {lastWinner && excludeLast && (

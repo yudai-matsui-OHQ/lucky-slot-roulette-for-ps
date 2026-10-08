@@ -4,3 +4,12 @@ body {
   margin: 0;
   min-width: 320px;
 }
+
+/* 確定ボタン用: 不透明度は変えず光だけを明滅させる (animate-pulse だと無効ボタンに見えるため) */
+@theme {
+  --animate-glow-pulse: glow-pulse 1.4s ease-in-out infinite;
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 16px rgba(34, 197, 94, 0.35); }
+    50% { box-shadow: 0 0 34px rgba(34, 197, 94, 0.85); }
+  }
+}
